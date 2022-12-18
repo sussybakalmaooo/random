@@ -1,0 +1,26 @@
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local old = mt.namecall
+
+mt.namecall = newcclosure(function(o, ...)
+  local remotename = tostring(o)
+  local method = getnamecallmethod()
+ 
+  if method == "FireServer" or method == "InvokeServer" then
+      if remotename == "RemoteEvent_ShootFastCastProjectile" then
+          packed = {...}
+
+          packed[9] = {
+        ["MaxDamageRange"] = 3000,
+        ["MaxDamage"] = 70,
+        ["MinDamageRange"] = 3000,
+        ["MinDamage"] = 70,
+        ["CriticalMultiplier"] = 5
+         }
+          return old(o, unpack(packed))
+      end
+   end
+
+   return old(o, ...)
+
+end)
